@@ -1,0 +1,24 @@
+body {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #333;
+}
+
+.navbar {
+  margin-bottom: 20px;
+}
+
+pre {
+	color: red;
+	font-size: large;
+}
+
+
+.footer {
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #00070F;
+}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Get Game Info</title>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="navbar.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="mainPage.html">Steam Web API Tutorial</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Get Game Info <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="APIIntro.html">Intro to APIs</a></li>
+                  <li><a href="getAPIKey.html">Get a Key</a></li>
+                  <li><a href="browserRequest.html">Browser Request</a></li>
+                  <li><a href="serverRequest.html">Server Request</a></li>
+                  <li><a href="getIcon.html">Get Game Icons</a></li>
+				  <li><a href="final.html">The End</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1>Get Game Information</h1>
+        <p>Now you're probably thinking, "Well, that's great and all, but how is a block of text going to help me build a cool Steam app?". Not to worry! That was just the foundation. Now that we know how to make a successful call, we can actually do things with it. Let's start by getting the game's name. </p>
+		<h2>Getting A Game's Name</h2>
+		<p>Alright, back to our command prompt terminal <code>server.js</code> file. When we used <code>res.send(sBody)</code>, we got back the stringified JSON object that was sent to us from Steam. However, we only want the game's name and we want to ignore the rest of the string. In order to make this easier, we need to revert the string back into a JSON object, which we can easily do with <code>JSON.parse()</code>. Once we've parsed the giant string, we can extract the game name by using the property accessor dot notation. We can use the GetSchemaForGame method which we've used before, but let's save that for later and use the getAppList method this time. The getAppList method doesn't need an API key and only needs the interface name, method name, and the version. We can use this method to list out all the games returned by the method, among other things. We're going to use this to retrieve the name of a game using an appID.</p>
+		<pre>app.get('/', function(req, res) {
+        var interfaceName = "ISteamApps/";
+        var methodName = "GetAppList/";
+        var version = "v0001/";
+        var url = baseUrl + interfaceName + methodName + version;
+
+    request.get(url, function(error, sRes, sBody) {
+        if(!error && res.statusCode >= 200 && res.statusCode < 400) {
+                var response = (JSON.parse(sBody));
+		var size = Object.keys(response.applist.apps.app).length;
+		for (var i = 0; i <= size; i++) {
+			if (response.applist.apps.app[i].appid === 374320) {
+				res.send(response.applist.apps.app[i].name)
+			}
+		}
+        }
+        else {
+                console.log(res.statusCode);
+        }
+    });	
+
+});		
+		</pre>
+		<p>I moved certain variables such as the baseUrl, API key, and appID out of the function because they mostly stay constant. The object that is retrieved and parsed is stored in the variable <code>response</code>. Here, I found the size of the object's app property and iterate through it to search for the app with the appid of <strong>374320</strong>. Once I find it, I return the name associated with that appid. Now, run it from your server and open up the localhost:3000 page and you should see something like this. </p>
+		<img src="gameName.png"></p>
+		<p>Go ahead and format it however you like.</p>
+		<h2>Getting News for a Game</h2>
+		<p>Let's try making another request using the GetNewsForApp method. This returns the latest news for a game using the appID. It uses the arguments: appid, count, maxlength, and format (which we can ignore). You can check out the <a href="https://developer.valvesoftware.com/wiki/Steam_Web_API">documentation</a> to see what each mean. Now we can go back to our variables and change them if we need to. From the Steam Web API documentation, we know that we get back the properties appid and newsitems. The newsitems property has it's own properties. We can use this to extract the information that we want to use. Let's say we want the title and the contents of the most recent newsitem. We can add a new <code>app.get()</code> function and let's map it to a different route. </p>
+		<pre>
+		<xmp>app.get('/news', function(req, res) {
+	var interfaceName = "ISteamNews/";
+	var methodName = "GetNewsForApp/";
+	var version = "/v0002/?";
+	var count = "&count=3";
+	var maxlength = "&maxlength=500";
+	url = baseUrl + interfaceName + methodName + version + appID + count + maxlength;
+
+	request.get(url, function(error, sRes, sBody) {
+		if(!error && res.statusCode >= 200 && res.statusCode < 400) {
+			var response = (JSON.parse(sBody));
+			var title = response.appnews.newsitems[0].title;
+			var contents = response.appnews.newsitems[0].contents;
+			var news = title + ": <br>" + contents
+			res.send(news);
+		}
+		else {
+			console.log(res.statusCode);
+		}
+	});
+});
+	</xmp></pre>
+	<p>Note that this call also didn't require an API key. Here, we've mapped this request to the <code>/news</code>route. Once again, we've parsed the body and retrieved the title and contents associated with the first newsitems. One thing to pay attention to is that we can't send a header after some of the body has already been written. In other words, we can't have multiple <code>res.send()</code> lines because after the first one, the server will start writing the body and will encounter an error once it encounters another <code>res.send()</code>. Therefore, we can first store our data in variables. We can then concatenate the title and contents and store them in a new variable before using <code>res.send()</code>. Now go back to your command prompt terminal and run this in your server and you should get something that looks like this.</p>
+	<img src="news.png">
+        <p>
+          <a class="btn btn-lg btn-primary" href="getIcon.html" role="button">Getting Icons &raquo;</a>
+        </p>
+      </div>
+
+    </div> <!-- /container -->
+	
+	<footer class="footer">
+      <div class="container">
+        <p class="text-muted"><a href="http://steampowered.com">Powered By Steam</a></p>
+      </div>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
