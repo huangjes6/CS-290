@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Browser Request</title>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link href="navbar.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="mainPage.html">Steam Web API Tutorial</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">A Simple Request <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="APIIntro.html">Intro to APIs</a></li>
+                  <li><a href="getAPIKey.html">Get A Key</a></li>
+                  <li><a href="serverRequest.html">Server Request</a></li>
+                  <li><a href="getGameInfo.html">Get Game Info</a></li>
+                  <li><a href="getIcon.html">Get Game Icons</a></li>
+				  <li><a href="final.html">The End</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h1>Make a Simple Browser API Request</h1>
+        <p>Let's start by making a simple API request! </p>
+		
+		<h2>Steam Web API Call Structure</h2>
+		<p>All Steam Web APIs follow a structured url call format which is as follows: http://api.steampowered.com/(interface name)/(method name)/v(version)/?key=(api key)&format=(format). Sometimes there are more arguments, sometimes less. As mentioned before, if the format isn't specified, it will return in JSON format. To see the list of API calls, click <a href="https://developer.valvesoftware.com/wiki/Steam_Web_API">here</a>.</p>
+		<h2>Using Javascript </h2>
+		<p>For our first API call, let's get a list of the achievements that can be obtained in a game using AJAX (<strong>A</strong>synchronous <strong>J</strong>ava<strong>S</strong>cript<strong>X</strong>ML), a common method used to send and retrieve data from a server.</p>
+		<p>Our first important line of code is: <p>
+			<pre>var request = new XMLHttpRequest();</pre>
+		<p>This allows us to retrieve data from a server without refreshing our page and interrupting us.</p>
+		<p>Next, since our url calls are always structured, let's put them into variables to make it easier to change up our API calls!</p>
+		<pre>
+			var baseUrl = "http://api.steampowered.com/";
+			var interfaceName = "ISteamUserStats/"; 
+			var methodName = "GetSchemaForGame/"; 
+			var version = "v2/"; 
+			var key = "?key= + Your API Key Here"; 
+			var appID = "&appid=374320";
+		</pre>
+		<p>Remember to substitute your API key into the variable for "key". We'll not worry about the format because we want the default JSON format. </p>
+		<p>To send a request to the server, we use the GET, <code>open()</code> and <code>send()</code> methods, so it'll look like this:</p>
+		<pre>request.open("GET", baseUrl + interfaceName + methodName + version + key + appID, true);
+		request.send(null); // Nothing is being sent
+		</pre>
+		<p>The <code>open()</code> method initializes an HTTP request and specifies how we want our request, in this case by <code>GET</code>. The <code>send()</code> method does exactly what it sounds like it does.</p>
+		<p>Once our page is loaded, we can parse the JSON data that was sent back from the server</p>
+		<pre>
+			request.addEventListener("load", function() {
+				var response = JSON.parse(request.responseText);
+				console.log(response);
+			})
+		</pre>
+		<p>Isn't this exciting? You've made your first request call to the Steam Web API! Let's put it all together. Go ahead and try it out in JSFiddle, a text editor, or your program of choice. Don't forget to change the API key variable!</p>
+		<iframe width="100%" height="300" src="http://jsfiddle.net/y0s4tv2h/5/embedded/js,html/dark/" allowfullscreen="allowfullscreen" frameborder="0"></iframe>
+		<p>To see the response received from the server, right-click on the webpage where you wrote your code and click "Inspect". If you're on Chrome, you can use the F12 button. Click on console and Ta-Da! Wait, what happend? We got warning messages:</p>
+		<pre>Mixed Content: The page at 'https://jsfiddle.net/' was loaded over HTTPS, but requested an insecure XMLHttpRequest endpoint 'http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=YourKeyHere&appid=374320'. This request has been blocked; the content must be served over HTTPS.</pre>
+		<pre>XMLHttpRequest cannot load http://api.steampowered.com/ISteamUserStats/GetSchemaForGame/v2/?key=YourKeyHere&appid=374320. Failed to start loading.</pre>
+		<p>What could have possibly gone wrong? 
+		
+        <p>
+          <a class="btn btn-lg btn-primary" href="serverRequest.html" role="button">Server Request &raquo;</a>
+        </p>
+      </div>
+
+    </div> <!-- /container -->
+	
+	<footer class="footer">
+      <div class="container">
+        <p class="text-muted"><a href="http://steampowered.com">Powered By Steam</a></p>
+      </div>
+    </footer>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
