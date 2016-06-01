@@ -1,0 +1,43 @@
+<h1>Workout Tracker</h1>
+<form id='workoutForm' action='/insert'>
+                <label>Name: </label>
+                <input type="text" name="name" id="name">
+                <label>Reps: </label>
+                <input type="number" name="reps" id="reps">
+                <label>Weight: </label>
+                <input type="number" name="weight" id="weight">
+                        <select name="units" id="units">
+                                <option value = "0">kgs</option>
+                                <option value = "1">lbs</option>
+                        </select>
+                <label>Date: </label>
+                <input type="date" name="date" id="date">
+                <input type="submit"  id="AddWorkout" value="Add Workout">
+	<!--Script For AJAX: -->
+	<script src="/script.js"></script>
+</form>
+
+<table id='workoutTable' border="solid">
+	<tr>
+		<th style="display:none">{{this.id}}</td>
+		<th style="width:15%">Name</th>
+		<th style="width:15%">Reps</th>
+		<th style="width:15%">Weight</th>
+		<th style="width:5%">Units</th>
+		<th style="width:15%">Date</th>
+		<th style="width:10%">Edit</th>
+		<th style="width:10%">Delete</th>
+	</tr>
+	{{#each results}}
+		<tr>
+			<td style="display:none">{{this.id}}</td>
+			<td>{{this.name}}</td>
+			<td>{{this.reps}}</td>
+			<td>{{this.weight}}</td>
+			<td>{{this.units}}</td>
+			<td>{{this.date}}</td>
+			<td><input type="button" value="Edit"></td>
+			<td><input type="button" value="Delete"></td>
+		</tr>
+	{{/each}}
+</table>
