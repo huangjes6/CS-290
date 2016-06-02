@@ -24,13 +24,14 @@ function getWorkouts() {
 	});
 };
 
-function deleteWorkout(deleteId) {
+function deleteWorkout() {
 	var table = document.getElementById('tbl');
 	var req = new XMLRequest();
 	req.open('GET', 'http://localhost:3000/delete?id=' + deleteId, true);
 	req.addEventListener('load', function() {
 		if (req.status >= 200 && req.status < 400) {
 			console.log('Deleting row');
+			var deleteId = JSON.parse(req.responseText);
 			for (var i = 0; i < table.rows.length; i++) {
 				var rowId = table.rows[i].getElementById('id').value;
 				if (rowId==deleteId) {
@@ -80,7 +81,7 @@ function addRow(data) {
 	newR.appendChild(editCell);
 
 	var deleteCell = document.createElement('td');
-	deleteCell.innerHTML = "<input type='button' value='Delete', onclick='deleteWorkout(" + id + ")'>";
+	deleteCell.innerHTML = "<input type='button' value='Delete', onclick='deleteWorkout()'>";
 	newR.appendChild(deleteCell);
 }
 

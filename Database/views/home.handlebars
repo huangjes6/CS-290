@@ -13,8 +13,6 @@
                 <label>Date: </label>
                 <input type="date" name="date" id="date">
                 <input type="submit"  id="AddWorkout" value="Add Workout">
-	<!--Script For AJAX: -->
-	<script src="/script.js"></script>
 </form>
 
 <table id='workoutTable' border="solid">
@@ -37,7 +35,10 @@
 			<td>{{this.units}}</td>
 			<td>{{this.date}}</td>
 			<td><input type="button" value="Edit"></td>
-			<td><input type="button" value="Delete"></td>
+			<td><input type="button" value="Delete" onclick="deleteWorkout()"></td>
 		</tr>
 	{{/each}}
 </table>
+
+<!--Script For AJAX: -->
+<script src="/script.js"></script>
